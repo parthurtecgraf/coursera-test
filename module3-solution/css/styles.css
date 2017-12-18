@@ -1,0 +1,32 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+#header-nav
+{
+  border-radius: 0;
+}
+
+.navbar-brand a:hover, .navbar-brand a:focus
+{
+  text-decoration: none;
+}
+
+.col-xs-12
+{
+	height: 1000px;
+}
+#menu-item {
+  text-align: center;
+}
+
+#item {
+  background-color: grey;
+  border: 1px solid black;
+  font-weight: bold;
+  font-size: 21px;
+  text-align: center;
+  margin: 30px 15px 15px 15px;
+}
