@@ -1,32 +1,36 @@
-* {
+*
+{
   box-sizing: border-box;
+}
+
+/** HEADER **/
+.navbar-collapse {
+    padding-right: 0px;
+    padding-left: 0px; 
+}
+
+.navbar-nav
+{
+  background-color: #CCC;
   margin: 0;
-  padding: 0;
+  text-align: center;
 }
-
-#header-nav
+/* END HEADER */
+.row
 {
-  border-radius: 0;
+  padding: 20px;
 }
-
-.navbar-brand a:hover, .navbar-brand a:focus
-{
-  text-decoration: none;
+.item {
+  padding: 5px;
+  font-weight: bold;
+  font-size: 18px;
+  text-align: center;
 }
 
 .col-xs-12
 {
-	height: 1000px;
-}
-#menu-item {
-  text-align: center;
+  border-width: 10px;
+  background-color: #CCC;
+  height: 1000px;
 }
 
-#item {
-  background-color: grey;
-  border: 1px solid black;
-  font-weight: bold;
-  font-size: 21px;
-  text-align: center;
-  margin: 30px 15px 15px 15px;
-}
