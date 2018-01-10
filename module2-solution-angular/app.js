@@ -1,64 +1,65 @@
 (function () {
 'use strict';
 
-var buyList = [
-  {
-    name: "Milk",
-    quantity: "10"
-  },
-  {
-    name: "Donut",
-    quantity: "20"
-  },
-  {
-    name: "Cookie",
-    quantity: "30"
-  },
-  {
-    name: "Chocolate",
-    quantity: "50"
-  },
-  {
-    name: "Cake",
-    quantity: "10"
-  }
-];
-
-var boughtList = [];
-
 angular.module('ShoppingList', [])
-  .controller('ShoppingListController', ShoppingListController)
-  .controller('BuyListController', BuyListController)
-  .controller('BoughtListController', BoughtListController);
+  .controller('ToBuyController', ToBuyController)
+  .controller('AlreadyBoughtController', AlreadyBoughtController)
+  .service('ShoppingListCheckOffService', ShoppingListCheckOffService);
 
-ShoppingListController.$inject = ['$scope'];
-function ShoppingListController($scope) {
-  $scope.buyList = buyList;
-  $scope.boughtList = boughtList;
-}
+function ShoppingListCheckOffService() {
+    var service = this;
 
-BuyListController.$inject = ['$scope'];
-function BuyListController($scope) {
-  $scope.buyItem = function (item) {
-    $scope.boughtList.push(item);
-    var boughtItemIndex = $scope.buyList.indexOf(item);
-    $scope.buyList.splice(boughtItemIndex, 1);
-    // console.log($scope.buyList.indexOf(item));
-    if($scope.buyList.length == 0)
-    {
-      $scope.message = "Everything is bought!";
-    }
-    // Alterar a mensagem da segunda lista
+    var toBuyList = [
+      { name: "Milk", quantity: "10" },
+      { name: "Donut", quantity: "20" },
+      { name: "Cookie", quantity: "30" },
+      { name: "Chocolate", quantity: "50" },
+      { name: "Cake", quantity: "10" }
+    ];
+
+    var boughtList = [];
+
+    service.getBuyList = function() {
+      return toBuyList;
+    };
+
+    service.getBoughtList = function() {
+      return boughtList;
+    };
+
+    service.buyItem = function(item)  {
+      boughtList.push(item);
+      var boughtItemIndex = toBuyList.indexOf(item);
+      toBuyList.splice(boughtItemIndex, 1);
+    };
+
+  }
+
+
+ToBuyController.$inject = ['ShoppingListCheckOffService'];
+function ToBuyController(ShoppingListCheckOffService) {
+  var toBuy = this;
+
+  toBuy.buyList = ShoppingListCheckOffService.getBuyList();
+  console.log(toBuy.buyList);
+  toBuy.isEmpty = function() {
+    return toBuy.buyList.length == 0;
+  };
+
+  toBuy.buyItem = function (item) {
+    return ShoppingListCheckOffService.buyItem(item);
   };
 }
 
-BoughtListController.$inject = ['$scope'];
-function BoughtListController($scope) {
-  // Colocar a mensagem aki
-  if($scope.boughtList.length == 0)
-  {
-    $scope.message = "Nothing bought yet.";
-  }
+AlreadyBoughtController.$inject = ['ShoppingListCheckOffService'];
+function AlreadyBoughtController(ShoppingListCheckOffService) {
+  var alreadyBought = this;
+
+  alreadyBought.boughtList = ShoppingListCheckOffService.getBoughtList();
+  console.log(alreadyBought.boughtList);
+  alreadyBought.isEmpty = function() {
+    return alreadyBought.boughtList.length == 0;
+  };
 }
 
 })();
