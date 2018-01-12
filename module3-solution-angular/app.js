@@ -15,34 +15,43 @@ function FoundItemsDirective() {
       found: '<',
       onRemove: '&'
     },
-    controller: NarrowItDownController,
+    controller: FoundItemsDirectiveController,
     controllerAs: 'list',
     bindToController: true
   };
   return ddo;
 }
 
+function FoundItemsDirectiveController() {
+  var list = this;
+
+  list.isEmpty = function() {
+    return list.found != undefined && list.found.length === 0;
+  }
+}
+
 MenuSearchService.$inject = ['$http', 'ApiBasePath'];
 function MenuSearchService($http, ApiBasePath) {
   var service = this;
+
   service.getMatchedMenuItems = function(searchTerm) {
-    var response = $http({
+    return $http({
       method: "GET",
       url: (ApiBasePath + "/menu_items.json")
-    });
-    return response.then(function (result, searchTerm) {
+    }).then(function (result) {
       // process result and only keep items that match
-      var foundItems = result.data;
-      if ((foundItems === undefined) ||
-          (foundItems !== undefined) && (foundItems.menu_items.length !== 0)) {
-        for(var i = 0; i < foundItems.menu_items.length ; i++) {
-          // if the description does not contain the searchTerm, it is removed
-          if (searchTerm !== undefined &&
-            foundItems.menu_items[i].description.toLowerCase().indexOf(searchTerm) === -1) {
-            foundItems.menu_items.splice(i, 1);
+      var items = result.data.menu_items;
+
+      var foundItems = [];
+      if(searchTerm !== undefined) {
+        for(var i = 0; i < items.length ; i++) {
+          // if the description does not contain the searchTerm, it is not added
+          if(items[i].description.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1) {
+            foundItems.push(items[i]);
           }
         }
       }
+      console.log(foundItems);
       // return processed items
       return foundItems;
     });
@@ -51,15 +60,24 @@ function MenuSearchService($http, ApiBasePath) {
 
 NarrowItDownController.$inject = ['MenuSearchService'];
 function NarrowItDownController(MenuSearchService) {
-  var list = this;
-  list.searchTerm = "";
+  var controller = this;
 
-  list.narrowItDown = function() {
-    list.found = MenuSearchService.getMatchedMenuItems(list.searchTerm);
+  controller.narrowItDown = function() {
+    if(controller.searchTerm === "")  {
+      controller.items = [];
+      return;
+    }
+    var promise = MenuSearchService.getMatchedMenuItems(controller.searchTerm);
+    promise.then(function(response) {
+      controller.items = response;
+    })
+    .catch(function(error) {
+      console.log("Promise Error", error);
+    })
   };
 
-  list.removeItem = function (itemIndex) {
-    items.splice(itemIndex, 1);
+  controller.removeItem = function (itemIndex) {
+    controller.items.splice(itemIndex, 1);
   };
 }
 })();

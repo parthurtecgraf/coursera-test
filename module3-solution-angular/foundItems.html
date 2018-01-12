@@ -1,8 +1,8 @@
-<div>
-  <ol>
-    <li ng-repeat="item in list.found">
-      {{ item.description }}
-      <button ng-click="list.onRemove({index: $index});">Don't want this one!</button>
-    </li>
-  </ol>
-</div>
+<h3>Results</h3>
+<div ng-if="list.isEmpty()">No results found</div>
+<ul>
+ <li ng-repeat="item in list.found">
+   ({{item.short_name}}) {{item.name}}: {{item.description}}
+   <button ng-click="list.onRemove({index: $index});">Don't want this one!</button>
+ </li>
+</ul>
